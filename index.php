@@ -1,20 +1,18 @@
 <?php 
-define('DB_HOST', getenv('OPENSHIFT_MYSQL_DB_HOST'));
-define('DB_USER',getenv('OPENSHIFT_MYSQL_DB_USERNAME'));
-define('DB_PASS',getenv('OPENSHIFT_MYSQL_DB_PASSWORD'));
-define('DB_BASE','test');
-define('DB_PORT',getenv('OPENSHIFT_MYSQL_DB_PORT')); 
+try 
+{
+	require_once 'config.php';
+    $conn = mysqlConnector();
+	$stmt = $conn->prepare("select * from friendList where FriendId='1' and IdGivenBy='Mobile'");
+    $stmt->execute();
 
-$dsn = 'mysql:dbname='.DB_BASE.';host='.DB_HOST.';port='.DB_PORT;
-$dbh = new PDO($dsn, DB_USER, DB_PASS);
-$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    while($row = $stmt->fetch()) 
+	{
+    	print_r($row);          
+    }
 
-$order = "select * from friendList where FriendId='1' and IdGivenBy='Mobile'";
-$result = $DB->prepare($sql);
 
-$row1 = mysqli_fetch_array($result);
-$getName = $row1["FriendName"];
-
-echo $getName;
-
+        } catch(PDOException $e) {
+                echo 'ERROR: ' . $e->getMessage();
+        }
 ?>
